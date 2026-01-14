@@ -3,24 +3,22 @@ version: "3.9"
 services:
   postgis:
     image: postgis/postgis:15-3.3
-    container_name: postgis-db
+    container_name: postgis-15
     env_file:
       - .env
+
     volumes:
+      # Dados (pode ser volume nomeado OU bind mount, não importa)
       - pgdata:/var/lib/postgresql/data
+
+      # Configs mapeadas manualmente
+      - ./config/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+      - ./config/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+      - ./config/pg_ident.conf:/var/lib/postgresql/data/pg_ident.conf
+
     ports:
       - "5432:5432"
-    restart: unless-stopped
 
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: pgadmin
-    env_file:
-      - .env
-    ports:
-      - "5050:80"
-    depends_on:
-      - postgis
     restart: unless-stopped
 
 volumes:
